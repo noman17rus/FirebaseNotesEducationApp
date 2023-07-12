@@ -13,18 +13,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.firebaseeducationapp.MainViewModel
+import com.example.firebaseeducationapp.MainViewModelFactory
 import com.example.firebaseeducationapp.navigation.NavRoute
 import com.example.firebaseeducationapp.navigation.NotesNavHost
+import com.example.firebaseeducationapp.utils.TYPE_FIREBASE
+import com.example.firebaseeducationapp.utils.TYPE_ROOM
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Start(navController: NavHostController) {
+    val context = LocalContext.current
+    val mViewModel: MainViewModel = viewModel(factory = MainViewModelFactory())
     Scaffold(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -34,12 +42,14 @@ fun Start(navController: NavHostController) {
             Text(text = "What will we use?")
             Button(modifier = Modifier.width(200.dp),
                 onClick = {
+                    mViewModel.initDatabase(TYPE_ROOM)
                     navController.navigate(NavRoute.MainScreen.route)
                 }) {
                 Text(text = "Room")
             }
             Button(modifier = Modifier.width(200.dp),
                 onClick = {
+                    mViewModel.initDatabase(TYPE_FIREBASE)
                     navController.navigate(NavRoute.MainScreen.route)
                 }) {
                 Text(text = "FireBase")
