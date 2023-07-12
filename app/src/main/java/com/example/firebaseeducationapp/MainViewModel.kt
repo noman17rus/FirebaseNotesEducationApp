@@ -1,42 +1,41 @@
 package com.example.firebaseeducationapp
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.firebaseeducationapp.database.room.AppRoomDataBase
+import com.example.firebaseeducationapp.database.room.NoteRepositoryImpl
 import com.example.firebaseeducationapp.model.Note
+import com.example.firebaseeducationapp.utils.REPOSITORY
 import com.example.firebaseeducationapp.utils.TYPE_FIREBASE
 import com.example.firebaseeducationapp.utils.TYPE_ROOM
 
-class MainViewModel() : ViewModel() {
+class MainViewModel(application: Application) : ViewModel() {
 
-    val readTest: MutableLiveData<List<Note>> = MutableLiveData<List<Note>>()
 
-    val dbType: MutableLiveData<String> = MutableLiveData<String>(TYPE_ROOM)
+    val context = application
+    fun initDatabase(type: String, onSuccess: () -> Unit) {
+        Log.d("CheckDB", "InitDataBase type: ${type}")
+        when (type) {
+            TYPE_ROOM -> {
+                val dao = AppRoomDataBase.getInstance(context = context).getRoomDao()
+                REPOSITORY = NoteRepositoryImpl(dao)
+                onSuccess()
+            }
 
-    fun initDatabase(type: String) {
-        dbType.value = type
-        Log.d("CheckDB", "InitDataBase type: ${dbType.value}")
-    }
 
-    init {
-        readTest.value = when (dbType.value) {
-            TYPE_ROOM -> { listOf<Note>(
-                Note(tittle = "Note1", subTittle = "sNote1"),
-                Note(tittle = "Note2", subTittle = "sNote2"),
-                Note(tittle = "Note3", subTittle = "sNote3"),
-                Note(tittle = "Note4", subTittle = "sNote4")
-            ) }
-            TYPE_FIREBASE -> listOf()
-            else -> listOf()
         }
     }
+
 }
 
 
-class MainViewModelFactory() : ViewModelProvider.Factory {
+class MainViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return MainViewModel() as T
+        return MainViewModel(application) as T
     }
 
 }

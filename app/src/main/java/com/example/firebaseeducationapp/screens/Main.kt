@@ -1,6 +1,7 @@
 package com.example.firebaseeducationapp.screens
 
 import android.annotation.SuppressLint
+import android.app.Application
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,9 +40,8 @@ import com.example.firebaseeducationapp.navigation.NavRoute
 fun Main(navController: NavHostController) {
 
     val context = LocalContext.current
-    val mViewModel: MainViewModel = viewModel(factory = MainViewModelFactory())
+    val mViewModel: MainViewModel = viewModel(factory = MainViewModelFactory(context.applicationContext as Application))
 
-    val notes = mViewModel.readTest.observeAsState(listOf()).value
     Scaffold(modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(modifier = Modifier.size(70.dp), onClick = {
@@ -53,9 +53,6 @@ fun Main(navController: NavHostController) {
         floatingActionButtonPosition = FabPosition.Center
     ) {
         LazyColumn() {
-            items(notes) {
-                NoteItem(note = it, navController = navController)
-            }
 
         }
 

@@ -1,6 +1,7 @@
 package com.example.firebaseeducationapp.screens
 
 import android.annotation.SuppressLint
+import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,7 +33,7 @@ import com.example.firebaseeducationapp.utils.TYPE_ROOM
 @Composable
 fun Start(navController: NavHostController) {
     val context = LocalContext.current
-    val mViewModel: MainViewModel = viewModel(factory = MainViewModelFactory())
+    val mViewModel: MainViewModel = viewModel(factory = MainViewModelFactory(context.applicationContext as Application))
     Scaffold(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -42,15 +43,15 @@ fun Start(navController: NavHostController) {
             Text(text = "What will we use?")
             Button(modifier = Modifier.width(200.dp),
                 onClick = {
-                    mViewModel.initDatabase(TYPE_ROOM)
-                    navController.navigate(NavRoute.MainScreen.route)
+                    mViewModel.initDatabase(TYPE_ROOM) { navController.navigate(NavRoute.MainScreen.route) }
+
                 }) {
                 Text(text = "Room")
             }
             Button(modifier = Modifier.width(200.dp),
                 onClick = {
-                    mViewModel.initDatabase(TYPE_FIREBASE)
-                    navController.navigate(NavRoute.MainScreen.route)
+                    mViewModel.initDatabase(TYPE_FIREBASE) { navController.navigate(NavRoute.MainScreen.route) }
+
                 }) {
                 Text(text = "FireBase")
             }
